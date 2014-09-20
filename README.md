@@ -1,4 +1,4 @@
-# Hiring Homework Exercise for PayByPhone
+# Homework Exercise
 
 This is an example app to demonstrate my programming skills. It uses AngularJS, Bootstrap, node.js, and makes calls with the Yelp API.
 
