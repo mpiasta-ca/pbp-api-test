@@ -1,0 +1,14 @@
+<div class="panel panel-default history-list" ng-show="history.length">
+    <div class="panel-heading">
+        <h3 class="panel-title">Recent</h3>
+    </div>
+    <div class="panel-body">
+        <ul>
+            <li ng-repeat="record in history">
+                <a href="#" ng-click="search(record)">
+                    <b>{{record.keywords}}</b> near "{{record.location}}" (within {{record.radius/1000}} km)
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -14,18 +14,16 @@
     </div>
     <div class="row" ng-controller="SearchController">
         <div class="col-sm-3">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Search</h3>
-                </div>
-                <div class="panel-body">
-                    <% include components/search.ejs %>
-                </div>
-            </div>
+            <% include components/search.ejs %>
+        
+            <% include components/history.ejs %>
         </div><!--/.col-sm-3-->
         
-        <div class="col-sm-9">
+        <div class="col-sm-9">        
+            <% include components/alert.ejs %>
+            <% include components/pagination.ejs %>
             <% include components/businesses.ejs %>
+            <% include components/pagination.ejs %>
         </div><!--/.col-sm-9-->    
     </div><!--/row-->
 </div><!--/container-->

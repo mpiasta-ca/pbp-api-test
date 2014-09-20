@@ -13,9 +13,73 @@ span.navbar-brand:hover {
     margin-top: 0;
     font-size: 20px;
 }
+.well {
+    background: #fff;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+.loading-spinner {
+    display: block;
+    margin: 40px auto;
+}
 .business-list li .photo {
     float: left;
     padding: 0 5px 3px 0;
+    width: 105px;
+    height: 103px;
 }
-.business-list li .excerpt {
+.business-list .media-heading {
+    margin-bottom: 4px;
+}
+.business-list .media-meta span {
+    display: inline-block;
+    margin-right: 8px;
+}
+.business-list .media-body p {
+    margin-bottom: 4px;
+    line-height: 1.25em;
+}
+.history-list .panel-body {
+    padding: 0;
+}
+.history-list .panel-body ul {
+    margin: 0;
+    padding-left: 0;
+}
+.history-list li {
+    list-style-type: none;
+    border-bottom: 1px solid #e1e1e1;
+}
+.history-list li:last-child{    
+    border-bottom: 0;
+}
+.history-list a {
+    display: block;
+    font-size: 12px;
+    padding: 8px 15px;
+}
+.history-list a:hover {
+    color: #167abe;
+}
+
+/* AngularJS Animation */
+.fadein,
+.fadeout {
+  -webkit-transition:all 1s;
+  -moz-transition:all 1s;
+  -o-transition:all 1s;
+  transition:all 1s;
+}
+
+.fadein.ng-hide-remove,
+.fadeout.ng-hide-add.ng-hide-add-active {
+  opacity: 0;
+  display: block !important;
+}
+
+.fadeout.ng-hide-add,
+.fadein.ng-hide-remove.ng-hide-remove-active {
+  opacity: 1;
+  display: block !important;
 }

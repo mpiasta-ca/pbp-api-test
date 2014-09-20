@@ -18,8 +18,3 @@ nbproject
 .vagrant/*
 app/.tmp
 app/node_modules
-app/1
-
-### Temporary
-*.bak.yaml
-*.bak
