@@ -1,8 +1,6 @@
-.vagrant/*
-app/.tmp
+### Default
 dump.rdb
 lib-cov
-*.bak
 *.seed
 *.log
 *.out
@@ -15,3 +13,11 @@ npm-debug.log
 nbproject
 .idea
 .node_history
+
+### Custom
+.vagrant/*
+app/.tmp
+
+### Temporary
+*.bak.yaml
+*.bak
