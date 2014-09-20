@@ -1,4 +1,10 @@
+# Hiring Homework Exercise for PayByPhone
+
+This is an example app to demonstrate my programming skills. It uses AngularJS, Bootstrap, node.js, and makes calls with the Yelp API.
+
 ### Pre-Requisites
+
+Need to have Vagrant and VirtualBox installed on your computer. These programs will automate the setup process for the required Ubuntu/node.js environment.
 
 1. [Download and install VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 
