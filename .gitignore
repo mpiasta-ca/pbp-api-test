@@ -1,6 +1,8 @@
-.tmp
+.vagrant/*
+app/.tmp
 dump.rdb
 lib-cov
+*.bak
 *.seed
 *.log
 *.out
