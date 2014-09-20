@@ -30,6 +30,8 @@
   },
   "main": "app.js",
   "repository": {
+    "type": "git",
+    "url": "https://github.com/mpiasta-ca/pbp-api-test.git"
   },
   "author": "root",
   "license": ""
