@@ -12,7 +12,7 @@ Need to have Vagrant and VirtualBox installed on your computer. These programs w
 
 ### Initial Use
 
-For the first use, go through the setup process for the environment. In a future boot, your environment will already be setup, so it will only need to be launched. How to setup:
+For the first use, vagrant will go through a longer setup process for the environment. In a future boot, your environment will already be setup, so it will launch quickly. How to setup:
 
 1. Download git repo into a local folder on your computer.
 
@@ -22,7 +22,7 @@ For the first use, go through the setup process for the environment. In a future
 
 4. Wait... (takes about 3-5 minutes)
 
-5. Open in your browser: [http://192.168.90.60](http://192.168.90.60)
+5. Open app in your browser: [http://192.168.90.60](http://192.168.90.60)
 
 ### Subsequent Use
 
@@ -32,4 +32,4 @@ For the first use, go through the setup process for the environment. In a future
 
 4. Wait... (less than 30 seconds)
 
-5. Open in your browser: [http://192.168.90.60](http://192.168.90.60)
+5. Open app in your browser: [http://192.168.90.60](http://192.168.90.60)
