@@ -1,0 +1,53 @@
+<ul class="list-group business-list">    
+    <li class="list-group-item clearfix" ng-repeat="(key, business) in data.businesses">
+        <div class="media">
+            <a class="pull-left" href="#">
+                <img ng-src="{{business.image_url}}" class="photo" ng-hide="!business.image_url">                
+            </a>
+            <div class="media-body">
+                <h4 class="media-heading">
+                    <a href="{{business.mobile_url}}" target="_new">{{business.name}}</a> - {{business.location.address[0]}}, {{business.location.city}}, {{business.location.state_code}}
+                </h4>
+                <p class="media-meta">
+                    <span ng-hide="!business.review_count">
+                        Reviews: {{business.review_count}}
+                    </span>
+                    <span ng-hide="!business.rating">
+                        Rating: {{business.rating}}
+                    </span>
+                    <span ng-hide="!business.rating_img_url">
+                        <img ng-src="{{business.rating_img_url}}">
+                    </span>
+                </p>
+                <p class="media-review" ng-hide="!business.snippet_text">
+                    "<i>{{business.snippet_text}}</i>"
+                </p>
+                <p>
+                    <button class="btn btn-primary btn-sm" ng-click="showBusiness(key)" ng-disabled="business.loading || business.reviews.length" title="Show business reviews">Reviews</button>
+                    
+                    <button class="btn btn-link btn-sm" ng-click="hideBusiness(key)" ng-disabled="business.loading" title="Hide this business">Hide</button>
+                </p>
+            </div>        
+        </div>
+        
+        <div class="block well load-block" ng-show="business.loading">
+            <img src="images/loading-spinner-small.gif" class="loading-spinner-small" alt="Loading...">
+        </div>
+        
+        <div class="media-reviews fadein fadeout" ng-show="business.reviews.length">
+            <ul class="well">
+                <li class="clearfix" ng-repeat="review in business.reviews">
+                    <p class="review-excerpt">
+                        <img ng-src="{{review.user.image_url}}" ng-hide="!review.user.image_url" class="review-user-image">
+                        <b>{{review.user.name}}:</b> <i>{{review.excerpt}}</i>
+                    </p>
+                    <p class="review-meta">
+                        <span>
+                            <img ng-src="{{review.rating_image_small_url}}" ng-hide="!review.rating_image_small_url">
+                        </span>
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </li>
+</ul>

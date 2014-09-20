@@ -1,4 +1,11 @@
-<ul class="pager" ng-show="false">
-  <li><a href="#">Previous</a></li>
-  <li><a href="#">Next</a></li>
+<ul class="pagination" ng-show="!loading && data.total > data.limit">
+    <li>
+        <button class="btn btn-default" ng-class="{disabled: data.page < 2}" ng-click="prev()">&larr; Prev</button>
+    </li>
+    <li>
+        <button class="btn btn-default" ng-class="{disabled: data.total == data.last}" ng-click="next()">Next &rarr;</button>
+    </li>
+    <li class="stats">
+        Showing <b>{{data.start}}</b> to <b>{{data.last}}</b> of {{data.total}}
+    </li>
 </ul>

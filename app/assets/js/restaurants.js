@@ -1,14 +1,18 @@
 (function(){
 
-    // Init Module
-    var module = angular.module('Restaurants', ['ngAnimate']);
-
-    // Search Controller
-    module.controller('SearchController', ['$scope', '$timeout', '$http', function ($scope, $timeout, $http) {
+    /*= Module
+    ------------------------------------------------------------*/
+    var app = angular.module('Restaurants', ['ngAnimate']);
+        
+    /*= Search Controller
+    ------------------------------------------------------------*/
+    app.controller('SearchController', ['$scope', '$controller', '$http', function ($scope, $controller, $http) {
+        // Get controllers
+        var AlertController = $controller('AlertController');
+        
         // Init vars
-        $scope.businesses = [];
+        $scope.data = [];
         $scope.history = [];
-        $scope.alert = [];
         
         // Init default search
         $scope.params = {
@@ -18,56 +22,114 @@
         };
         
         // Form Submit
-        $scope.search = function (inject) {
-            if (inject) {
-                $scope.params = inject;
-            }
+        $scope.search = function (obj) {            
+            // Inject values instead of using form fields
+            var query = obj? angular.copy(obj) : angular.copy($scope.params);
            
             // Skip Loading if Equal Query
-            if (angular.equals($scope.history[0], $scope.params)) {
-                return $scope.message("warning", "Oops!", "This search is already being displayed.");
+            if (angular.equals($scope.history[0], query) && (!obj || (obj && !obj.paginate))) {
+                return AlertController.warn("This search is already displayed.");
             }
             
             // Init Query UI
             $scope.loading = true;
-            $scope.alert.show = false;
-            $scope.businesses = [];
-            $scope.history.unshift(angular.copy($scope.params));
-            
-            // Limit history length
-            if ($scope.history.length > 5) {
-                $scope.history.pop();
-            }
+            $scope.data = [];
             
             // Yelp Call
-            $http.get('/yelp', {params: $scope.params}).
-                success(function(data){
+            $http.get('/yelp', {params: query}).
+                success(function (data) {
                     $scope.loading = false;
-                    $scope.businesses = data;
+                    $scope.data = data;   
+                    
+                    // Save search to history
+                    if (!obj || (obj && !obj.paginate)) {
+                        $scope.history.unshift(query);
+                    
+                        // Limit history length
+                        if ($scope.history.length > 5) {
+                            $scope.history.pop();
+                        }
+                    }             
                 }).
-                error(function(data){
-                    $scope.loading = false;
-                    //console.log(data);
+                error(function (data) {
+                    $scope.loading = false;                    
+                    return AlertController.error(data.error? data.error :"Connect failed. Try refreshing your browser.");
+                });
+        };
+    
+        // Show Business Details
+        $scope.showBusiness = function (key) {
+            var id = $scope.data.businesses[key].id;
+            
+            $scope.data.businesses[key].loading = true;
+            
+            $http.get('/yelp/' + id).
+                success(function (data) {
+                    $scope.data.businesses[key].loading = false;
+                    $scope.data.businesses[key].reviews = data;
+                }).
+                error(function (data) {
+                    $scope.data.businesses[key].loading = false;           
+                    return AlertController.error(data.error? data.error : "Connect failed. Try refreshing your browser.");
                 });
         };
         
-        // Display Message
-        $scope.message = function (type, header, body) {
-            // Set alert data
-            $scope.alert = {
-                show: true,
-                type: type,
-                header: header,
-                body: body
-            };
-            
-            // Cancel existing timer
-            $timeout.cancel($scope.alertTimer);
-            
-            // Auto-hide after 5 seconds
-            $scope.alertTimer = $timeout(function(){
-               $scope.alert.show = false;
-            }, 5000);
+        // Hide Business Record
+        $scope.hideBusiness = function (key) {
+            $scope.data.businesses.splice(key, 1);
+            return AlertController.success("Restaurant was hidden.");
+        };
+        
+        // Prev. Page
+        $scope.prev = function () {
+            var obj = angular.copy($scope.history[0]);
+            obj.paginate = true;
+            obj.page = parseInt($scope.data.page) - 1;
+            $scope.search(obj);
+        };
+        
+        // Next Page
+        $scope.next = function () {
+            var obj = angular.copy($scope.history[0]);
+            obj.paginate = true;
+            obj.page = parseInt($scope.data.page) + 1;
+            obj.total = $scope.data.total;
+            $scope.search(obj);
+        };
+    }]);
+        
+    /*= Alert Controller
+    ------------------------------------------------------------*/
+    app.controller('AlertController', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
+        $rootScope.message = [];
+                
+        this.success = function (message) {
+            this.enqueue({
+                show: true, type: 'success', header: 'Yay!', body: message
+            });
+        };
+        
+        this.warn = function (message) {
+            this.enqueue({
+                show: true, type: 'warning', header: 'Oops!', body: message
+            });
+        };
+        
+        this.error = function (message) {
+            this.enqueue({
+                show: true, type: 'danger', header: 'Uhoh!', body: message
+            });
+        };
+        
+        this.enqueue = function (obj) {
+            $timeout.cancel(this.timer);
+            $rootScope.message = obj;
+            var that = this;
+            this.timer = $timeout(function(){ that.remove() }, 5000);
+        };
+        
+        this.remove = function () {
+            $rootScope.message.show = false;
         };
     }]);    
 })();

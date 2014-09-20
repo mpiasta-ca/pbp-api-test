@@ -1,3 +1,5 @@
-<div class="alert alert-{{alert.type}} fadein fadeout ng-hide" ng-show="alert.show" role="alert">
-  <strong>{{alert.header}}</strong> {{alert.body}}
+<div ng-controller="AlertController">
+    <div class="alert alert-{{message.type}} fadein fadeout ng-hide" ng-show="message.show">
+        <strong>{{message.header}}</strong> {{message.body}}
+    </div>
 </div>

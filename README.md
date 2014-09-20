@@ -22,7 +22,7 @@ For the first use, vagrant will go through a 3-5 minute setup process for the en
 
 4. Wait... (takes about 3-5 minutes)
 
-5. Open app in your browser: [http://192.168.90.60](http://192.168.90.60)
+5. Open app in your browser: [http://192.168.90.60](http://192.168.90.60). If the website appears offline, wait a few more moments, because sails.js takes about 30 seocnds to launch after `vagrant up` is completed.
 
 ### Subsequent Use
 
@@ -30,6 +30,6 @@ For the first use, vagrant will go through a 3-5 minute setup process for the en
 
 2. Type `vagrant up` and hit Enter.
 
-4. Wait... (less than 30 seconds)
+4. Wait... (about 30 seconds)
 
-5. Open app in your browser: [http://192.168.90.60](http://192.168.90.60)
+5. Open app in your browser: [http://192.168.90.60](http://192.168.90.60). If the website appears offline, wait a few more moments, because sails.js takes about 30 seocnds to launch after `vagrant up` is completed.

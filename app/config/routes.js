@@ -36,7 +36,9 @@ module.exports.routes = {
     view: 'index'
   },
   
-  'get /yelp': 'YelpController.get'
+  'get /yelp': 'YelpController.index',
+  
+  'get /yelp/:slug': 'YelpController.business'
 
   /***************************************************************************
   *                                                                          *
