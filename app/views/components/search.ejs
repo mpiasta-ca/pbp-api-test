@@ -1,0 +1,24 @@
+<form name="Form">
+  <div class="form-group" ng-class="{'has-error': Form.Keywords.$invalid}">
+    <label class="control-label">Restaurant</label>
+    <input type="text" class="form-control" name="Keywords" ng-model="params.keywords" ng-minlength="3" required>
+  </div>
+  
+  <div class="form-group" ng-class="{'has-error': Form.Address.$invalid}">
+    <label class="control-label">Address</label>
+    <input type="text" class="form-control" name="Address" ng-model="params.location" ng-minlength="3" required>
+  </div>
+  
+  <div class="form-group" ng-class="{'has-error': Form.Radius.$invalid}">
+    <label class="control-label">Radius</label>
+    <select class="form-control" name="Radius" ng-model="params.radius" required>
+        <option value="3000">3 km</option>
+        <option value="5000">5 km</option>
+        <option value="10000">10 km</option>
+    </select>
+  </div>
+  
+  <button type="submit" class="btn btn-primary" ng-disabled="Form.$invalid || loading" ng-click="search()">
+    {{loading ? 'Loading...' : 'Search'}}
+  </button>
+</form>

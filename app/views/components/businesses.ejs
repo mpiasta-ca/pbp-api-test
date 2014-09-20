@@ -1,0 +1,29 @@
+<ul class="list-group business-list">
+    <li class="list-group-item" ng-show="!history.length">
+        <h4>Get Started</h4>
+        <p>Search by restaurant name or food and I'll fetch the closest eateries to your location (via Yelp).</p>
+    </li>
+    
+    <li class="list-group-item" ng-show="history.length && !loading && !businesses.length">
+        <h4>Uhoh, try again!</h4>
+        <p>No results for <b>{{params.keywords}}</b> near "{{params.location}}" (within {{params.radius/1000}} km).</p>
+    </li>
+    
+    <li class="list-group-item" ng-show="loading">
+        <h4>Loading...</h4>
+        <p>One moment as we fetch your request.</p>
+    </li>
+    
+    <li class="list-group-item clearfix" ng-repeat="business in businesses">
+        <img ng-src="{{business.image_url}}" class="photo" ng-hide="{{!business.image_url}}">
+        
+        <h4 class="list-group-item-heading">
+            {{business.name}} - {{business.location.address[0]}}, {{business.location.city}}, {{business.location.state_code}}
+        </h4>
+        
+        <p class="list-group-item-text">
+            <span class="excerpt">{{business.snippet_text}}</span>
+            <button class="btn btn-default" ng-click="getBusiness(business.id)">Details</button>
+        </p>
+    </li>
+</ul>
