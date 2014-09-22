@@ -6,7 +6,7 @@
     
     /*= Data Service
     ------------------------------------------------------------*/
-    app.service('DataService', function ($http, $rootScope, AlertService) {
+    app.service('DataService', ['$http', '$rootScope', 'AlertService', function ($http, $rootScope, AlertService) {
         var businesses = undefined;
         var meta = undefined;
 
@@ -52,7 +52,7 @@
                 return meta;
             }
         }
-    });
+    }]);
     
     /*= History Service
     ------------------------------------------------------------*/
@@ -95,7 +95,7 @@
     
     /*= Alert Service
     ------------------------------------------------------------*/
-    app.service('AlertService', function ($timeout) {
+    app.service('AlertService', ['$timeout', function ($timeout) {
         var messages = [];
         var DISPLAY_TIME = 3500;
         var TRANSITION_TIME = 1250;
@@ -141,11 +141,11 @@
             },
             all: function () { return messages; }
         }
-    });
+    }]);
     
     /*= Search Controller    
     ------------------------------------------------------------*/
-    app.controller('SearchController', function ($scope, DataService, HistoryService, AlertService) {        
+    app.controller('SearchController', ['$scope', 'DataService', 'HistoryService', 'AlertService', function ($scope, DataService, HistoryService, AlertService) {        
         // Default fields at init
         $scope.params = {
             keywords: 'McDonalds',
@@ -169,11 +169,11 @@
                 HistoryService.save(params);
             }
         }
-    });
+    }]);
         
     /*= Pagination Controller
     ------------------------------------------------------------*/
-    app.controller('PaginationController', function ($scope, DataService, HistoryService) {
+    app.controller('PaginationController', ['$scope', 'DataService', 'HistoryService', function ($scope, DataService, HistoryService) {
         $scope.meta = function () {
             return DataService.meta();
         }
@@ -189,11 +189,11 @@
             // Send API request
             DataService.getIndex(params);
         }
-    });
+    }]);
     
     /*= History Controller    
     ------------------------------------------------------------*/
-    app.controller('HistoryController', function ($scope, DataService, HistoryService, AlertService) {
+    app.controller('HistoryController', ['$scope', 'DataService', 'HistoryService', 'AlertService', function ($scope, DataService, HistoryService, AlertService) {
         $scope.history = function () {
             return HistoryService.all()
         }
@@ -214,11 +214,11 @@
                 HistoryService.save(params);
             }
         }
-    });
+    }]);
     
     /*= Business Controller
     ------------------------------------------------------------*/
-    app.controller('BusinessController', function ($scope, DataService, HistoryService, AlertService) {
+    app.controller('BusinessController', ['$scope', 'DataService', 'HistoryService', 'AlertService', function ($scope, DataService, HistoryService, AlertService) {
         $scope.businesses = function () {
             return DataService.all();
         }
@@ -241,13 +241,13 @@
             $scope.businesses().splice(key, 1);
             AlertService.success("Restaurant was hidden.");
         }
-    }); 
+    }]); 
     
     /*= Alert Controller
     ------------------------------------------------------------*/
-    app.controller('AlertController', function ($scope, AlertService) {
+    app.controller('AlertController', ['$scope', 'AlertService', function ($scope, AlertService) {
         $scope.messages = function () {
             return AlertService.all()
         };
-    });
+    }]);
 })();
