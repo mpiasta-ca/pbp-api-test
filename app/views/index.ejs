@@ -13,7 +13,7 @@
         <h1>Yelp Results</h1>
     </div>
     
-    <div class="row" ng-controller="SearchController">
+    <div class="row">
         <div class="col-sm-3">
             <% include components/search.ejs %>        
             <% include components/history.ejs %>
@@ -21,8 +21,12 @@
         
         <div class="col-sm-9">            
             <% include components/alert.ejs %>
-            <% include components/messages.ejs %>
-            <% include components/results.ejs %>
+            
+            <div ng-controller="BusinessController">
+                <% include components/messages.ejs %>
+                <% include components/businesses.ejs %>
+            </div>
+            
             <% include components/pagination.ejs %>
         </div><!--/.col-sm-9-->    
     </div><!--/row-->

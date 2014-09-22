@@ -1,5 +1,9 @@
 <div ng-controller="AlertController">
-    <div class="alert alert-{{message.type}} fadein fadeout ng-hide" ng-show="message.show">
+    <div ng-repeat="message in messages()" class="alert alert-{{message.type}} fadein fadeout ng-hide" ng-show="!message.hidden">
         <strong>{{message.header}}</strong> {{message.body}}
     </div>
+</div>
+
+<div class="block" ng-show="loading">
+    <img src="images/loading-spinner-large.gif" class="loading-spinner" alt="Loading...">
 </div>

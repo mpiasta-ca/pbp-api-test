@@ -1,11 +1,13 @@
-<ul class="pagination" ng-show="!loading && data.total > data.limit">
-    <li>
-        <button class="btn btn-default" ng-class="{disabled: data.page < 2}" ng-click="prev()">&larr; Prev</button>
-    </li>
-    <li>
-        <button class="btn btn-default" ng-class="{disabled: data.total == data.last}" ng-click="next()">Next &rarr;</button>
-    </li>
-    <li class="stats">
-        Showing <b>{{data.start}}</b> to <b>{{data.last}}</b> of {{data.total}}
-    </li>
-</ul>
+<div ng-controller="PaginationController">
+    <ul class="pagination" ng-show="!loading && meta() && meta().total > meta().limit">
+        <li>
+            <button class="btn btn-default" ng-class="{disabled: meta().page < 2}" ng-click="search(-1)">&larr; Prev</button>
+        </li>
+        <li>
+            <button class="btn btn-default" ng-class="{disabled: meta().total == meta().last}" ng-click="search(1)">Next &rarr;</button>
+        </li>
+        <li class="stats">
+            Showing <b>{{meta().start}}</b> to <b>{{meta().last}}</b> of {{meta().total}}
+        </li>
+    </ul>
+</div>

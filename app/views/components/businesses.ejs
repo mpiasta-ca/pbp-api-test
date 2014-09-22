@@ -1,5 +1,5 @@
-<ul class="list-group business-list">    
-    <li class="list-group-item clearfix" ng-repeat="(key, business) in data.businesses">
+<ul class="list-group business-list">
+    <li class="list-group-item clearfix" ng-repeat="(key, business) in businesses()">
         <div class="media">
             <a class="pull-left" href="#">
                 <img ng-src="{{business.image_url}}" class="photo" ng-hide="!business.image_url">                

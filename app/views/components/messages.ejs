@@ -1,13 +1,9 @@
-<div class="block well" ng-show="!history.length && !loading">
+<div class="block well" ng-show="!loading && !meta()">
     <h4>Get Started</h4>
     <p>Search by restaurant name or food and I'll fetch the closest eateries to your location (via Yelp).</p>
 </div>
 
-<div class="block well" ng-show="history.length && !loading && !data.total">
+<div class="block well" ng-show="!loading && meta() && !meta().total">
     <h4>Uhoh, try again!</h4>
-    <p>No results for <b>{{history[0].keywords}}</b> near "{{history[0].location}}" (within {{history[0].radius/1000}} km).</p>
-</div>
-
-<div class="block" ng-show="loading">
-    <img src="images/loading-spinner-large.gif" class="loading-spinner" alt="Loading...">
+    <p>No results for <b>{{current().keywords}}</b> near "{{current().location}}" (within {{current().radius/1000}} km).</p>
 </div>

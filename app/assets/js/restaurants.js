@@ -3,133 +3,251 @@
     /*= Module
     ------------------------------------------------------------*/
     var app = angular.module('Restaurants', ['ngAnimate']);
-        
-    /*= Search Controller
+    
+    /*= Data Service
     ------------------------------------------------------------*/
-    app.controller('SearchController', ['$scope', '$controller', '$http', function ($scope, $controller, $http) {
-        // Get controllers
-        var AlertController = $controller('AlertController');
+    app.service('DataService', function ($http, $rootScope, AlertService) {
+        var businesses = undefined;
+        var meta = undefined;
+
+        return {
+            getIndex: function (query) {
+                $rootScope.loading = true;
+                businesses = undefined;
+                
+                return $http.get('/yelp', { params: query }).
+                    success(function (res) {
+                        $rootScope.loading = false;
+                        businesses = res.businesses;
+                        delete res['businesses'];
+                        meta = res;
+                        return true;
+                    }).
+                    error(function (res) {
+                        $rootScope.loading = false;
+                        AlertService.error(res.error? res.error : "Connection failed. Try refreshing...");
+                        return false;
+                    });
+            },
+            getById: function (key) {                
+                var business = businesses[key];
+                business.loading = true;
+                
+                return $http.get('/yelp/' + business.id).                
+                    success(function (res) {
+                        business.loading = false;
+                        business.reviews = res;
+                        return true;
+                    }).
+                    error(function (res) {
+                        business.loading = false;
+                        AlertService.error(res.error? res.error : "Connection failed. Try refreshing...");
+                        return false;
+                    });
+            },
+            all: function () {
+                return businesses;
+            },
+            meta: function () {
+                return meta;
+            }
+        }
+    });
+    
+    /*= History Service
+    ------------------------------------------------------------*/
+    app.service('HistoryService', function () {        
+        var current = false;
+        var history = [];
+        var MAX_LENGTH = 5;
+                
+        // Remove existing if in list (will be shifted to top)
+        function nodupes (query) {
+            angular.forEach(history, function (value, key) {
+                if (angular.equals(value, query)) {
+                    return history.splice(key, 1);
+                }
+            });
+        }
         
-        // Init vars
-        $scope.data = [];
-        $scope.history = [];
+        // Remove last entry if longer than MAX_LENGTH
+        function truncate () {
+            if (history.length > MAX_LENGTH) {
+                history.pop();
+            }
+        }
         
-        // Init default search
+        return {
+            save: function (query) {
+                nodupes(query);
+                history.unshift(query);
+                current = query;
+                truncate();
+            },
+            active: function () {
+                return current;
+            },
+            all: function () {
+                return history;
+            }
+        }
+    });
+    
+    /*= Alert Service
+    ------------------------------------------------------------*/
+    app.service('AlertService', function ($timeout) {
+        var messages = [];
+        var DISPLAY_TIME = 3500;
+        var TRANSITION_TIME = 1250;
+        
+        // Mark message as hidden after DELAY_TIME (see: ng-animate)
+        function scheduleExpire () {
+            $timeout(function () {
+                // Find first unhidden message
+                for (var i = 0; i <= messages.length; i++) {
+                    if (messages[i].hidden == false) {
+                        messages[i].hidden = true;
+                        scheduleDelete();
+                        break;
+                    }
+                }                
+            }, DISPLAY_TIME);
+        }
+        
+        // Delete hidden message after TRANSITION_TIME (see: ng-animate)
+        function scheduleDelete () {
+            $timeout(function () {
+                // Delete oldest entry in object
+                messages.shift();
+            }, TRANSITION_TIME);
+        }
+
+        // Add new message to queue
+        function append (message) {
+            messages.push(angular.extend(message, { hidden: false }));            
+            // Schedule expire call for this message
+            scheduleExpire();
+        }
+
+        return {
+            success: function (message) {
+                append({ type: 'success', header: 'OK!', body: message });
+            },
+            info: function (message) {
+                append({ type: 'warning', header: 'Oops!', body: message });
+            },
+            error: function (message) {
+                append({ type: 'danger', header: 'Uhoh!', body: message });
+            },
+            all: function () { return messages; }
+        }
+    });
+    
+    /*= Search Controller    
+    ------------------------------------------------------------*/
+    app.controller('SearchController', function ($scope, DataService, HistoryService, AlertService) {        
+        // Default fields at init
         $scope.params = {
             keywords: 'McDonalds',
             location: '1168 Hamilton, Vancouver, BC',
             radius: '3000'
-        };
+        }
         
-        // Form Submit
-        $scope.search = function (obj) {            
-            // Inject values instead of using form fields
-            var query = obj? angular.copy(obj) : angular.copy($scope.params);
-           
-            // Skip Loading if Equal Query
-            if (angular.equals($scope.history[0], query) && (!obj || (obj && !obj.paginate))) {
-                return AlertController.warn("This search is already displayed.");
+        // On form submit
+        $scope.search = function () {
+            var current = HistoryService.active();
+            var params = angular.copy($scope.params);
+            
+            // Skip if already loaded
+            if (angular.equals(current, params)) {
+                return AlertService.info("Your request is already being displayed.");
+            }
+                       
+            // Send API request
+            if (DataService.getIndex(params)) {
+                // On success, save query to recent searches
+                HistoryService.save(params);
+            }
+        }
+    });
+        
+    /*= Pagination Controller
+    ------------------------------------------------------------*/
+    app.controller('PaginationController', function ($scope, DataService, HistoryService) {
+        $scope.meta = function () {
+            return DataService.meta();
+        }
+        
+        // On form submit
+        $scope.search = function (page) {
+            var current = angular.copy(HistoryService.active());
+            var params = angular.extend(current, {
+                page: parseInt($scope.meta().page) + parseInt(page),
+                total: $scope.meta().total
+            });
+            
+            // Send API request
+            DataService.getIndex(params);
+        }
+    });
+    
+    /*= History Controller    
+    ------------------------------------------------------------*/
+    app.controller('HistoryController', function ($scope, DataService, HistoryService, AlertService) {
+        $scope.history = function () {
+            return HistoryService.all()
+        }
+        
+        // On click of a recent search link
+        $scope.search = function (query) {
+            var current = HistoryService.active();
+            var params = angular.copy(query);
+            
+            // Skip if already loaded
+            if (angular.equals(current, params)) {
+                return AlertService.info("Your request is already being displayed.");
             }
             
-            // Init Query UI
-            $scope.loading = true;
-            $scope.data = [];
-            
-            // Yelp Call
-            $http.get('/yelp', {params: query}).
-                success(function (data) {
-                    $scope.loading = false;
-                    $scope.data = data;   
-                    
-                    // Save search to history
-                    if (!obj || (obj && !obj.paginate)) {
-                        $scope.history.unshift(query);
-                    
-                        // Limit history length
-                        if ($scope.history.length > 5) {
-                            $scope.history.pop();
-                        }
-                    }             
-                }).
-                error(function (data) {
-                    $scope.loading = false;                    
-                    return AlertController.error(data.error? data.error :"Connect failed. Try refreshing your browser.");
-                });
-        };
+            // Send API request
+            if (DataService.getIndex(params)) {
+                // On success, save query to recent searches
+                HistoryService.save(params);
+            }
+        }
+    });
     
-        // Show Business Details
-        $scope.showBusiness = function (key) {
-            var id = $scope.data.businesses[key].id;
-            
-            $scope.data.businesses[key].loading = true;
-            
-            $http.get('/yelp/' + id).
-                success(function (data) {
-                    $scope.data.businesses[key].loading = false;
-                    $scope.data.businesses[key].reviews = data;
-                }).
-                error(function (data) {
-                    $scope.data.businesses[key].loading = false;           
-                    return AlertController.error(data.error? data.error : "Connect failed. Try refreshing your browser.");
-                });
-        };
+    /*= Business Controller
+    ------------------------------------------------------------*/
+    app.controller('BusinessController', function ($scope, DataService, HistoryService, AlertService) {
+        $scope.businesses = function () {
+            return DataService.all();
+        }
         
-        // Hide Business Record
+        $scope.meta = function () {
+            return DataService.meta();
+        }
+        
+        $scope.current = function () {
+            return HistoryService.active();
+        }
+        
+        // Show review for business
+        $scope.showBusiness = function (key) {            
+            DataService.getById(key);
+        }
+       
+        // Hide business
         $scope.hideBusiness = function (key) {
-            $scope.data.businesses.splice(key, 1);
-            return AlertController.success("Restaurant was hidden.");
-        };
-        
-        // Prev. Page
-        $scope.prev = function () {
-            var obj = angular.copy($scope.history[0]);
-            obj.paginate = true;
-            obj.page = parseInt($scope.data.page) - 1;
-            $scope.search(obj);
-        };
-        
-        // Next Page
-        $scope.next = function () {
-            var obj = angular.copy($scope.history[0]);
-            obj.paginate = true;
-            obj.page = parseInt($scope.data.page) + 1;
-            obj.total = $scope.data.total;
-            $scope.search(obj);
-        };
-    }]);
-        
+            $scope.businesses().splice(key, 1);
+            AlertService.success("Restaurant was hidden.");
+        }
+    }); 
+    
     /*= Alert Controller
     ------------------------------------------------------------*/
-    app.controller('AlertController', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
-        $rootScope.message = [];
-                
-        this.success = function (message) {
-            this.enqueue({
-                show: true, type: 'success', header: 'Yay!', body: message
-            });
+    app.controller('AlertController', function ($scope, AlertService) {
+        $scope.messages = function () {
+            return AlertService.all()
         };
-        
-        this.warn = function (message) {
-            this.enqueue({
-                show: true, type: 'warning', header: 'Oops!', body: message
-            });
-        };
-        
-        this.error = function (message) {
-            this.enqueue({
-                show: true, type: 'danger', header: 'Uhoh!', body: message
-            });
-        };
-        
-        this.enqueue = function (obj) {
-            $timeout.cancel(this.timer);
-            $rootScope.message = obj;
-            var that = this;
-            this.timer = $timeout(function(){ that.remove() }, 5000);
-        };
-        
-        this.remove = function () {
-            $rootScope.message.show = false;
-        };
-    }]);    
+    });
 })();
