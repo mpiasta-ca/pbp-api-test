@@ -44,12 +44,15 @@ module.exports = {
             offset: offset
         };
         
+        // Get Yelp api key from /config/connections.js
+        var YelpConfig = sails.config.connections.yelp;
+        
         // Yelp Auth (use module: yelp)
         var yelp = require("yelp").createClient({
-            consumer_key: "bL1WmjzGVGGp-zloCXYVJA", 
-            consumer_secret: "wjUQx87Ty9Fazk2gHEjfl48FDeI",
-            token: "zxKtH7bAWdU-jrxGl8USKxJ9MkOEmyfn",
-            token_secret: "DPU37xWg1KigSwHIV4QIEit9mqg"
+            consumer_key: YelpConfig.consumer_key,
+            consumer_secret: YelpConfig.consumer_secret,
+            token: YelpConfig.token,
+            token_secret: YelpConfig.token_secret,
         });
         
         // Exec Yelp Query
@@ -82,12 +85,15 @@ module.exports = {
             });
         }
         
+        // Get Yelp api key from /config/connections.js
+        var YelpConfig = sails.config.connections.yelp;
+        
         // Yelp Auth (use module: yelp)
         var yelp = require("yelp").createClient({
-            consumer_key: "bL1WmjzGVGGp-zloCXYVJA", 
-            consumer_secret: "wjUQx87Ty9Fazk2gHEjfl48FDeI",
-            token: "zxKtH7bAWdU-jrxGl8USKxJ9MkOEmyfn",
-            token_secret: "DPU37xWg1KigSwHIV4QIEit9mqg"
+            consumer_key: YelpConfig.consumer_key,
+            consumer_secret: YelpConfig.consumer_secret,
+            token: YelpConfig.token,
+            token_secret: YelpConfig.token_secret,
         });
         
         // Exec Yelp Query

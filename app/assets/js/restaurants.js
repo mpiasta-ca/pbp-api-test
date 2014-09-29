@@ -3,7 +3,7 @@
     /*= Module
     ------------------------------------------------------------*/
     var app = angular.module('Restaurants', ['ngAnimate']);
-    
+        
     /*= Data Service
     ------------------------------------------------------------*/
     app.service('DataService', ['$http', '$rootScope', 'AlertService', function ($http, $rootScope, AlertService) {

@@ -21,6 +21,14 @@
 
 module.exports.connections = {
 
+  // Config for Yelp api key
+  yelp: {
+    consumer_key: "", 
+    consumer_secret: "",
+    token: "",
+    token_secret: ""
+  },
+  
   /***************************************************************************
   *                                                                          *
   * Local disk storage for DEVELOPMENT ONLY                                  *
